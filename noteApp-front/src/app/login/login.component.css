@@ -1,0 +1,30 @@
+.relative{
+  position: relative;
+}
+
+.login-container{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  min-width: 450px;
+  min-height: 150px;
+  background-color: #e8c4b680;
+
+  -webkit-box-shadow: 0px 0px 83px -5px rgba(0,0,0,0.78);
+  -moz-box-shadow: 0px 0px 83px -5px rgba(0,0,0,0.78);
+  box-shadow: 0px 0px 83px -5px rgba(0,0,0,0.78);
+}
+
+.login-input{
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  display: flex;
+  align-items: center;
+  justify-content:center
+}
+
+button{
+  margin: 0 5px;
+}

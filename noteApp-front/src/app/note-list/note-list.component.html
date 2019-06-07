@@ -1,0 +1,37 @@
+<div class="noteList">
+  <h1>My notes</h1>
+
+
+  <mat-card class="addNote">
+
+    <div *ngIf="error" class="error">
+      <h4>{{error}}</h4>
+    </div>
+
+    <form (ngSubmit)="addNote()" [formGroup]="addNoteForm" class="example-container">
+      <mat-form-field>
+        <input matInput placeholder="Title" formControlName="title">
+      </mat-form-field>
+
+      <mat-form-field>
+        <textarea  matInput placeholder="Note" formControlName="content"></textarea>
+      </mat-form-field>
+
+      <button mat-raised-button>Add new note</button>
+    </form>
+  </mat-card>
+
+  <mat-card *ngFor="let note of noteList" class="note">
+    <mat-card-header>
+      <mat-card-title>{{note.title}}</mat-card-title>
+      <mat-card-subtitle>{{note.createdAt}}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p>
+       {{note.content}}
+      </p>
+    </mat-card-content>
+
+  </mat-card>
+</div>
