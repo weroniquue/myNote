@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from '../services/user.service';
+import {NotesService} from '../services/notes.service';
 import {Note} from '../models/note';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {User} from '../models/user';
+
+const enum NoteStatus {
+  NEW = 'new',
+  DONE = 'done'
+}
 
 @Component({
   selector: 'app-note-list',
@@ -15,9 +19,9 @@ export class NoteListComponent implements OnInit {
   submitted = false;
   loading = false;
   addNoteForm: FormGroup;
-  error:string;
+  error: string;
 
-  constructor(private userService: UserService,
+  constructor(private notesService: NotesService,
               private formBuilder: FormBuilder) { }
 
   ngOnInit() {
@@ -27,7 +31,7 @@ export class NoteListComponent implements OnInit {
       content: ['', Validators.required],
     });
 
-    this.userService.getNotes()
+    this.notesService.getNotes()
       .subscribe(response => {
         this.noteList = response;
       });
@@ -48,10 +52,9 @@ export class NoteListComponent implements OnInit {
 
     const note = new Note(this.f.title.value, this.f.content.value);
 
-    this.userService.addNote(note)
+    this.notesService.addNote(note)
       .subscribe(response => {
-          console.log(response);
-          note.createdAt = response.createdAt;
+          note.updatedAt = response.updatedAt;
           this.noteList.push(note);
         },
         error => {
@@ -60,5 +63,35 @@ export class NoteListComponent implements OnInit {
         });
 
 
+  }
+
+  updateStatus(note: Note) {
+    const oldStatus = note.status;
+    if (note.status === NoteStatus.NEW) {
+      note.status = NoteStatus.DONE;
+    } else {
+      note.status = NoteStatus.NEW;
+    }
+
+    this.notesService.updateNote(note)
+      .subscribe(response => {
+          note.updatedAt = response.updatedAt;
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+          note.status = oldStatus;
+        });
+  }
+
+  deleteNote(note: Note) {
+    this.notesService.deleteNote(note._id)
+      .subscribe(() => {
+        this.noteList.splice(this.noteList.indexOf(note), 1);
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+        });
   }
 }
