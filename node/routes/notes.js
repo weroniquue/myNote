@@ -39,9 +39,9 @@ router.post('/add', function (req, res, next) {
 });
 
 router.put('/edit', function (req, res, next) {
-    Note.findByIdAndUpdate({_id: new ObjectID(req.body._id)}, req.body)
-        .then(() => res.status(200).send())
-        .catch(err => sendError(res, err));
+    Note.findByIdAndUpdate({_id: new ObjectID(req.body._id)}, req.body, {new: true}, function (err, result) {
+       err ? res.send(err): res.send(result);
+    });
 });
 
 // delete note

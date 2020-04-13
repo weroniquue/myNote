@@ -1,0 +1,11 @@
+.note{
+  margin: 10px 0;
+}
+
+.note-done {
+  text-decoration-line: line-through;
+}
+
+.addNote{
+  margin: 20px 0px 50px;
+}

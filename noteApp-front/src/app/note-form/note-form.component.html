@@ -1,0 +1,13 @@
+<mat-card class="addNote">
+  <form (ngSubmit)="addNote()" [formGroup]="addNoteForm" class="add-note-container">
+    <mat-form-field>
+      <input [(ngModel)]="noteModel.title" formControlName="title" matInput placeholder="Title">
+    </mat-form-field>
+
+    <mat-form-field>
+      <textarea [(ngModel)]="noteModel.content" formControlName="content" matInput placeholder="Note"></textarea>
+    </mat-form-field>
+
+    <button mat-raised-button>Add new note</button>
+  </form>
+</mat-card>

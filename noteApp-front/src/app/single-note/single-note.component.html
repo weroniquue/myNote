@@ -1,0 +1,22 @@
+<mat-card *ngIf="!canEdit" [ngClass]="note.status === 'done' ? 'note-done' : ''" class="note">
+  <mat-card-header>
+    <mat-card-title>{{note.title}}</mat-card-title>
+    <mat-card-subtitle>{{note.updatedAt | date: 'EEEE d MMMM y h:mm a'}}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p>
+      {{note.content}}
+    </p>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button (click)="updateStatus(note)" mat-button>{{note.status === 'new' ? 'DONE' : 'TO DO'}}</button>
+    <button (click)="enableEdit()" mat-button>Edit</button>
+    <button (click)="deleteNote(note)" mat-button>Delete</button>
+  </mat-card-actions>
+</mat-card>
+
+
+<!-- Edit -->
+<app-note-form *ngIf="canEdit" [noteModel]="note" (note)="editNote($event)"></app-note-form>

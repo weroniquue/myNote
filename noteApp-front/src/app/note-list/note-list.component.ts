@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NotesService} from '../services/notes.service';
 import {Note} from '../models/note';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 const enum NoteStatus {
   NEW = 'new',
@@ -16,53 +15,30 @@ const enum NoteStatus {
 export class NoteListComponent implements OnInit {
 
   noteList: Note[];
-  submitted = false;
+  noteModel = new Note('', '');
   loading = false;
-  addNoteForm: FormGroup;
   error: string;
+  category = 'all';
 
-  constructor(private notesService: NotesService,
-              private formBuilder: FormBuilder) { }
+  constructor(private notesService: NotesService) {
+  }
 
   ngOnInit() {
-
-    this.addNoteForm = this.formBuilder.group({
-      title: ['', Validators.required],
-      content: ['', Validators.required],
-    });
-
     this.notesService.getNotes()
       .subscribe(response => {
         this.noteList = response;
       });
   }
 
-
-
-  get f() { return this.addNoteForm.controls; }
-
-  addNote() {
-
-    this.submitted = true;
-
-    // stop here if form is invalid
-    if (this.addNoteForm.invalid) {
-      return;
-    }
-
-    const note = new Note(this.f.title.value, this.f.content.value);
-
+  addNote(note: Note) {
     this.notesService.addNote(note)
       .subscribe(response => {
-          note.updatedAt = response.updatedAt;
-          this.noteList.push(note);
+          this.noteList.push(response);
         },
         error => {
           this.error = error;
           this.loading = false;
         });
-
-
   }
 
   updateStatus(note: Note) {
@@ -73,25 +49,37 @@ export class NoteListComponent implements OnInit {
       note.status = NoteStatus.NEW;
     }
 
-    this.notesService.updateNote(note)
-      .subscribe(response => {
-          note.updatedAt = response.updatedAt;
-        },
-        error => {
-          this.error = error;
-          this.loading = false;
-          note.status = oldStatus;
-        });
+    this.updateNote(note, oldStatus);
   }
 
   deleteNote(note: Note) {
     this.notesService.deleteNote(note._id)
       .subscribe(() => {
-        this.noteList.splice(this.noteList.indexOf(note), 1);
+          this.noteList.splice(this.noteList.indexOf(note), 1);
         },
         error => {
           this.error = error;
           this.loading = false;
         });
+  }
+
+  updateNote(note: Note, defaultStatus) {
+    const index = this.noteList.indexOf(note);
+    this.notesService.updateNote(note)
+      .subscribe(response => {
+          // TODO jest zły rrsposne
+          console.log(response);
+          this.noteList[index] = response;
+          // note.updatedAt = response.updatedAt;
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+          note.status = defaultStatus;
+        });
+  }
+
+  setCategory(category: string) {
+    this.category = category;
   }
 }
